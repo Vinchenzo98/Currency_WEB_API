@@ -1,5 +1,5 @@
-﻿using Currency.API.Models.DTO;
-using Currency.API.Models;
+﻿using Currency.API.Models;
+using Currency.API.Models.DTO;
 using Currency.API.Repo.Interfaces;
 using Currency.API.Services.Interfaces;
 
