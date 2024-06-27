@@ -37,7 +37,7 @@ namespace Currency_WEB_API.Controllers
 
             if (currentUser == null)
             {
-                return Unauthorized(currentUserId + "not found now");
+                return Unauthorized(currentUserId + "not found");
             }
 
             var getPayeeId = await _userInformationServices.GetUserByTagService(transferAmountRequest.userTag);
