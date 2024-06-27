@@ -2,8 +2,8 @@
 {
     public class BlockTransactionRequest
     {
-        public string userTag { get; set; }
+        public string currencyTag { get; set; }
         public string Reason { get; set; }
-
+        public string userTag { get; set; }
     }
 }

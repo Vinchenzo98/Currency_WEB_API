@@ -12,9 +12,10 @@ namespace Currency_WEB_API.Controllers
         private readonly IAccountTypeServices _accountTypeServices;
         private readonly IGetUserFromTokenService _userFromTokenServices;
         private readonly IUserLoginServices _userLoginServices;
+
         public CurrencyDepositController(
             IAccountTypeServices accountTypeServices,
-            IGetUserFromTokenService userFromTokenService, 
+            IGetUserFromTokenService userFromTokenService,
             IUserLoginServices userLoginServices
             )
         {
@@ -36,12 +37,11 @@ namespace Currency_WEB_API.Controllers
                 return Unauthorized(userId + "not found");
             }
 
-            var depositAmount = await _accountTypeServices.updateAmountServices(depositRequest.Amount, userId);
+            var depositAmount = await _accountTypeServices.updateAmountServices(depositRequest.Amount, userId, depositRequest.currencyTag);
 
             //take from bank account in api
 
             return Ok(depositAmount);
         }
-
     }
 }

@@ -4,6 +4,6 @@ namespace Currency.API.Services.Interfaces
 {
     public interface IBlockUserServices
     {
-        Task<BlockUserDTO> createBlockedUserServices(int userId, int adminId);
+        Task<BlockUserDTO> createBlockedUserServices(int accountId, int adminId, int userId);
     }
 }

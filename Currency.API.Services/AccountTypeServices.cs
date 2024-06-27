@@ -32,16 +32,18 @@ namespace Currency.API.Services
         {
             try
             {
-                var currencyAccountExists = await _accountTypeRepo.getUserAccountRepo(userId);
+                var currencyAccountExists = await _accountTypeRepo.getUserAccountRepo(userId, currencyTag);
+
 
                 if (currencyAccountExists != null)
                 {
-                    if (currencyAccountExists.CurrencyType != null && currencyAccountExists.UserID != null)
+                    if (currencyAccountExists.AccountType != null && currencyAccountExists.UserID != null)
                     {
                         throw new Exception(
                             $"Currency type: {currencyAccountExists.CurrencyType} for {currencyAccountExists.UserID} already exists.");
                     }
                 }
+                
 
                 var getCurrency = await _currencyExchangeRepo.getCurrencyByName(currencyTag);
 
@@ -72,11 +74,11 @@ namespace Currency.API.Services
             }
         }
 
-        public async Task<AccountTypeDTO> getUserAccountServices(int userId)
+        public async Task<AccountTypeDTO> getUserAccountServices(int userId, string currencyTag)
         {
             try
             {
-                var getAccount = await _accountTypeRepo.getUserAccountRepo(userId);
+                var getAccount = await _accountTypeRepo.getUserAccountRepo(userId, currencyTag);
 
                 if (getAccount == null)
                 {
@@ -85,6 +87,7 @@ namespace Currency.API.Services
 
                 var accountDTO = new AccountTypeDTO
                 {
+                    AccountID = getAccount.AccountID,
                     AccountType = getAccount.AccountType,
                     CurrencyID = getAccount.CurrencyID,
                     UserID = getAccount.UserID,
@@ -99,11 +102,11 @@ namespace Currency.API.Services
             }
         }
 
-        public async Task<AccountTypeDTO> updateAmountServices(decimal amount, int userId)
+        public async Task<AccountTypeDTO> updateAmountServices(decimal amount, int userId, string currencyTag)
         {
             try
             {
-                var account = await _accountTypeRepo.getUserAccountRepo(userId);
+                var account = await _accountTypeRepo.getUserAccountRepo(userId, currencyTag);
 
                 if (account == null)
                 {
@@ -140,7 +143,7 @@ namespace Currency.API.Services
                       account.CurrencyID,
                       account.UserID,
                       timeStamp,
-                      account.Amount
+                      amount
                       );
 
                 var accountDTO = new AccountTypeDTO

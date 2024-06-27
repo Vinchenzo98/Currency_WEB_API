@@ -45,11 +45,12 @@ namespace Currency_WEB_API.Controllers
 
             var getUserId = await _userInformationServices.GetUserByTagService(blockUserRequest.userTag);
 
-            var getUserAccount = await _accountTypeServices.getUserAccountServices(getUserId.UserID);
+            var getUserAccount = await _accountTypeServices.getUserAccountServices(getUserId.UserID, blockUserRequest.currencyTag);
 
             var blockedUser = await _blockUserServices.createBlockedUserServices(
-                    getUserAccount.UserID,
-                    admin.AdminID
+                    getUserAccount.AccountID,
+                    admin.AdminID,
+                    getUserAccount.UserID
                 );
 
             return Ok(blockedUser);

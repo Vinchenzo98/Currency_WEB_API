@@ -13,6 +13,7 @@ namespace Currency_WEB_API.Controllers
         private readonly IAccountTypeServices _accountTypeServices;
         private readonly IGetUserFromTokenService _userFromTokenServices;
         private readonly IUserLoginServices _userLoginServices;
+
         public CurrencyWithdarwController(
             IAccountTypeServices accountTypeServices,
             IGetUserFromTokenService userFromTokenService,
@@ -26,7 +27,6 @@ namespace Currency_WEB_API.Controllers
 
         [HttpPost("withdraw")]
         [Authorize(Policy = "UserPolicy")]
-
         public async Task<IActionResult> WithdrawAmount(WithdrawRequest withdrawRequest)
         {
             var userId = _userFromTokenServices.GetUserIdFromToken();
@@ -40,7 +40,7 @@ namespace Currency_WEB_API.Controllers
 
             decimal convertToNegative = -Math.Abs(withdrawRequest.Amount);
 
-            var withdrawAmount = await _accountTypeServices.updateAmountServices(convertToNegative, userId);
+            var withdrawAmount = await _accountTypeServices.updateAmountServices(convertToNegative, userId, withdrawRequest.currencyTag);
 
             //take from bank account in api
 
