@@ -8,6 +8,8 @@ namespace Currency.API.Services.Interfaces
                 string currencyTag,
                 int userId);
 
+        Task<List<AccountTypeDTO>> getAllUserAccountsServices(int userID);
+
         Task<AccountTypeDTO> getUserAccountServices(int userId, string currencyTag);
 
         Task<AccountTypeDTO> updateAmountServices(decimal amount, int userId, string currencyTag);

@@ -4,15 +4,15 @@ using Currency.API.Services.Interfaces;
 
 namespace Currency.API.Services
 {
-   public class UserInformationServices : IUserInformationServices
+    public class UserInformationServices : IUserInformationServices
     {
-
         private readonly IUserInformationRepo _userInformationRepo;
 
         public UserInformationServices(IUserInformationRepo userInformationRepo)
         {
             _userInformationRepo = userInformationRepo;
         }
+
         public async Task<UserModelDTO> GetUserByTagService(string userTag)
         {
             var authUser = await _userInformationRepo.getUserByTagRepo(userTag);

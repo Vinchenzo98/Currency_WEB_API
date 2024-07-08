@@ -6,8 +6,14 @@ namespace Currency.API.Repo.Interfaces
     {
         Task<TransactionLogModelAPI> createTransactionRepo(TransactionLogModelAPI transactionLog);
 
+        List<TransactionLogModelAPI> getAllTransactionRepo(int userID, int accountID);
+
+        List<TransactionLogModelAPI> getNegativeTransactionRepo(int userID, int accountID);
+
+        List<TransactionLogModelAPI> getPositiveTransactionRepo(int userID, int accountID);
+
         Task<TransactionLogModelAPI> getUserTransaction(
-                int userID,
+                                int userID,
                 int currencyID,
                 decimal amount
             );

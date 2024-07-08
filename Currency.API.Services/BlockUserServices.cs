@@ -38,5 +38,9 @@ namespace Currency.API.Services
 
             return blockUserDTO;
         }
+
+        /* public async Task<BlockUserDTO> getBlockedUserServices()
+         {
+         }*/
     }
 }

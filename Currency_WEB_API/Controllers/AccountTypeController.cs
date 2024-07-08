@@ -12,8 +12,9 @@ namespace Currency_WEB_API.Controllers
         private readonly IAccountTypeServices _acccountTypeServices;
         private readonly IGetUserFromTokenService _userFromTokenServices;
         private readonly IUserLoginServices _userLoginServices;
+
         public AccountTypeController(
-            IAccountTypeServices acccountTypeServices, 
+            IAccountTypeServices acccountTypeServices,
             IGetUserFromTokenService userFromTokenService,
             IUserLoginServices userLoginServices
             )
@@ -23,18 +24,16 @@ namespace Currency_WEB_API.Controllers
             _userLoginServices = userLoginServices;
         }
 
-
         [HttpPost("create-account")]
         [Authorize(Policy = "UserPolicy")]
         public async Task<IActionResult> createAccount([FromBody] AccountTypeRequest accountRequest)
         {
-
             var userId = _userFromTokenServices.GetUserIdFromToken();
 
             var user = await _userLoginServices.GetUserByIdService(userId);
 
             if (user == null)
-            { 
+            {
                 return Unauthorized(userId + "not found");
             }
 
@@ -49,7 +48,29 @@ namespace Currency_WEB_API.Controllers
                 return BadRequest("Currency account allready exists for user");
             }
 
-            return Ok( accountType );
+            return Ok(accountType);
+        }
+
+        [HttpGet("get-accounts")]
+        [Authorize(Policy = "UserPolicy")]
+        public async Task<IActionResult> getAllUserAccounts()
+        {
+            var userId = _userFromTokenServices.GetUserIdFromToken();
+
+            var user = await _userLoginServices.GetUserByIdService(userId);
+
+            if (user == null)
+            {
+                return Unauthorized(userId + "not found");
+            }
+
+            var getAllUserAccounts = await _acccountTypeServices.getAllUserAccountsServices(userId);
+
+            if (getAllUserAccounts == null)
+            {
+                return NoContent();
+            }
+            return Ok(getAllUserAccounts);
         }
     }
 }

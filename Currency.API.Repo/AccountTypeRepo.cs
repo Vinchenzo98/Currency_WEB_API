@@ -21,6 +21,13 @@ namespace Currency.API.Repo
             return accountModel;
         }
 
+        public async Task<List<AccountTypeModelAPI>> getAllUserAccountsRepo(int userId)
+        {
+            return await _currencyAPIContext.AccountType.Where(
+                    al => al.UserID == userId
+                ).ToListAsync();
+        }
+
         public async Task<AccountTypeModelAPI> getUserAccountRepo(int userId, string currencyTag)
         {
             var account = await _currencyAPIContext.AccountType.FirstOrDefaultAsync(

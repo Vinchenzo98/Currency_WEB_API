@@ -12,7 +12,23 @@ namespace Currency.API.Services.Interfaces
                 decimal amount
             );
 
-        Task<TransactionLogDTO> getUserTransactionServices(
+        List<TransactionLogDTO> getAllTransactionsServices(
+            int userID,
+            string currencyTag,
+            int accountID
+            );
+
+        List<TransactionLogDTO> getNegativeAmountServices(
+            int userID,
+            string currencyTag,
+            int accountID);
+
+        List<TransactionLogDTO> getPositiveAmountServices(
+                    int userID,
+            string currencyTag,
+            int accountID);
+
+        Task<TransactionLogDTO> getUserTransactionByIDServices(
                 int userID,
                 int currencyID,
                 decimal amount

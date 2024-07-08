@@ -50,7 +50,7 @@ namespace Currency_WEB_API.Controllers
 
             var getUserAccount = await _accountTypeServices.getUserAccountServices(getUserId.UserID, blockedTransaction.currencyTag);
 
-            var getTransactionTime = await _transactionLogServices.getUserTransactionServices(
+            var getTransactionTime = await _transactionLogServices.getUserTransactionByIDServices(
                 getUserAccount.UserID,
                 getUserAccount.CurrencyID,
                 getUserAccount.Amount

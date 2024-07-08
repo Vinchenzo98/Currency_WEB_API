@@ -7,11 +7,16 @@ namespace Currency.API.Services
 {
     public class TransactionLogServices : ITransactionLogServices
     {
+        private readonly ICurrencyExchangeRepo _currencyExchangeRepo;
         private readonly ITransactionLogRepo _transactionLogRepo;
 
-        public TransactionLogServices(ITransactionLogRepo transactionLogRepo)
+        public TransactionLogServices(
+            ITransactionLogRepo transactionLogRepo,
+            ICurrencyExchangeRepo currencyExchangeRepo
+            )
         {
             _transactionLogRepo = transactionLogRepo;
+            _currencyExchangeRepo = currencyExchangeRepo;
         }
 
         public async Task<TransactionLogDTO> createTransactionServices(
@@ -45,7 +50,69 @@ namespace Currency.API.Services
             return transactionDTO;
         }
 
-        public async Task<TransactionLogDTO> getUserTransactionServices(
+        public List<TransactionLogDTO> getAllTransactionsServices(int userID, string currencyTag, int accountID)
+        {
+            var getAllTransaction = _transactionLogRepo.getAllTransactionRepo(userID, accountID);
+
+            var allTransactionsDTO = new List<TransactionLogDTO>();
+
+            foreach (var transaction in getAllTransaction)
+            {
+                var transactionDTO = new TransactionLogDTO
+                {
+                    TimeSent = transaction.TimeSent,
+                    Amount = transaction.Amount,
+                    CurrencyTag = currencyTag
+                };
+
+                allTransactionsDTO.Add(transactionDTO);
+            }
+
+            return allTransactionsDTO;
+        }
+
+        public List<TransactionLogDTO> getNegativeAmountServices(int userID, string currencyTag, int accountID)
+        {
+            var getNegative = _transactionLogRepo.getNegativeTransactionRepo(userID, accountID);
+
+            var negativeAmountDTO = new List<TransactionLogDTO>();
+
+            foreach (var transaction in getNegative)
+            {
+                var amountDTO = new TransactionLogDTO
+                {
+                    TimeSent = transaction.TimeSent,
+                    Amount = transaction.Amount,
+                    CurrencyTag = currencyTag
+                };
+
+                negativeAmountDTO.Add(amountDTO);
+            }
+
+            return negativeAmountDTO;
+        }
+
+        public List<TransactionLogDTO> getPositiveAmountServices(int userID, string currencyTag, int accountID)
+        {
+            var getAllTransaction = _transactionLogRepo.getPositiveTransactionRepo(userID, accountID);
+
+            var positiveAmountDTO = new List<TransactionLogDTO>();
+
+            foreach (var transaction in getAllTransaction)
+            {
+                var amountDTO = new TransactionLogDTO
+                {
+                    TimeSent = transaction.TimeSent,
+                    Amount = transaction.Amount,
+                    CurrencyTag = currencyTag
+                };
+                positiveAmountDTO.Add(amountDTO);
+            }
+
+            return positiveAmountDTO;
+        }
+
+        public async Task<TransactionLogDTO> getUserTransactionByIDServices(
                 int userID,
                 int currencyID,
                 decimal amount

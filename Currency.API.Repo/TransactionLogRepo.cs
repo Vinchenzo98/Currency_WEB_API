@@ -2,6 +2,7 @@
 using Currency.API.Models;
 using Currency.API.Repo.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 
 namespace Currency.API.Repo
 {
@@ -21,6 +22,34 @@ namespace Currency.API.Repo
             _currencyAPIContext.Add(transactionLog);
             await _currencyAPIContext.SaveChangesAsync();
             return transactionLog;
+        }
+
+        public List<TransactionLogModelAPI> getAllTransactionRepo(int userID, int accountID)
+        {
+            return _currencyAPIContext.TransactionLog.Where(
+                t => t.UserID == userID &&
+                t.AccountID == accountID)
+            .ToList();
+        }
+
+        public List<TransactionLogModelAPI> getNegativeTransactionRepo(int userID, int accountID)
+        {
+            return _currencyAPIContext.TransactionLog.Where(
+                tl => 
+                tl.UserID == userID &&
+                tl.AccountID == accountID &&
+                tl.Amount < 0
+                ).ToList();
+        }
+
+        public List<TransactionLogModelAPI> getPositiveTransactionRepo(int userID, int accountID)
+        {
+            return _currencyAPIContext.TransactionLog.Where(
+                tl =>
+                tl.UserID == userID &&
+                tl.AccountID == accountID &&
+                tl.Amount >= 0
+                ).ToList();
         }
 
         public async Task<TransactionLogModelAPI> getUserTransaction(

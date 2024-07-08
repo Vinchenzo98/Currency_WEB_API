@@ -40,6 +40,14 @@ namespace Currency_WEB_API.Controllers
                 return Unauthorized(currentUserId + "not found");
             }
 
+            //block user based on reason
+            //reasons can be:
+            //money laundering
+            //identity check fails
+            //too many banned transactions
+
+            //var userBanStatus
+
             var getPayeeId = await _userInformationServices.GetUserByTagService(transferAmountRequest.userTag);
 
             //get user then compare currency tags in accounts to see if conversion needs to happen
@@ -57,7 +65,7 @@ namespace Currency_WEB_API.Controllers
 
             if (getPayeeAccount == null)
             {
-                return NotFound("User " + getPayeeId.UserTag + "does not have an account" + "plop");
+                return NotFound("User " + getPayeeId.UserTag + "does not have an account");
             }
 
             return Ok(getUserAccount);

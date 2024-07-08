@@ -34,7 +34,6 @@ namespace Currency.API.Services
             {
                 var currencyAccountExists = await _accountTypeRepo.getUserAccountRepo(userId, currencyTag);
 
-
                 if (currencyAccountExists != null)
                 {
                     if (currencyAccountExists.AccountType != null && currencyAccountExists.UserID != null)
@@ -43,7 +42,6 @@ namespace Currency.API.Services
                             $"Currency type: {currencyAccountExists.CurrencyType} for {currencyAccountExists.UserID} already exists.");
                     }
                 }
-                
 
                 var getCurrency = await _currencyExchangeRepo.getCurrencyByName(currencyTag);
 
@@ -69,6 +67,40 @@ namespace Currency.API.Services
                 return account;
             }
             catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public async Task<List<AccountTypeDTO>> getAllUserAccountsServices(int userID)
+        {
+            try
+            {
+                var getAllUserAccounts = await _accountTypeRepo.getAllUserAccountsRepo(userID);
+
+                if (getAllUserAccounts == null)
+                {
+                    throw new Exception("Accounts do not exist");
+                }
+
+                var accountsToListDTO = new List<AccountTypeDTO>();
+
+                foreach (var account in getAllUserAccounts)
+                {
+                    var accountDTO = new AccountTypeDTO
+                    {
+                        AccountID = account.AccountID,
+                        AccountType = account.AccountType,
+                        CurrencyID = account.CurrencyID,
+                        UserID = account.UserID,
+                        Amount = account.Amount,
+                    };
+
+                    accountsToListDTO.Add(accountDTO);
+                }
+                return accountsToListDTO;
+            }
+            catch (Exception e)
             {
                 return null;
             }
