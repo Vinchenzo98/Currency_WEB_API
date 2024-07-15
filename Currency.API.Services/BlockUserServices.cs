@@ -39,8 +39,22 @@ namespace Currency.API.Services
             return blockUserDTO;
         }
 
-        /* public async Task<BlockUserDTO> getBlockedUserServices()
-         {
-         }*/
+        public async Task<BlockUserDTO> getBlockedUserServices(int userId)
+        {
+            var getBlockedUser = await _blockUserRepo.getBlockedUserRepo(userId);
+
+            if (getBlockedUser == null)
+            {
+                return null;
+            }
+
+            var blockedUserDTO = new BlockUserDTO
+            {
+                UserID = getBlockedUser.UserID,
+                BlockDate = getBlockedUser.BlockDate
+            };
+
+            return blockedUserDTO;
+        }
     }
 }

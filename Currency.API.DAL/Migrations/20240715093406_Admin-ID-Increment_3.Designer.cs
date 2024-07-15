@@ -4,6 +4,7 @@ using Currency.API.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Currency.API.DAL.Migrations
 {
     [DbContext(typeof(CurrencyAPIContext))]
-    partial class CurrencyAPIContextModelSnapshot : ModelSnapshot
+    [Migration("20240715093406_Admin-ID-Increment_3")]
+    partial class AdminIDIncrement_3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -147,6 +150,10 @@ namespace Currency.API.DAL.Migrations
 
                     b.Property<DateTime>("BlockDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UnblockDate")
                         .HasColumnType("datetime2");

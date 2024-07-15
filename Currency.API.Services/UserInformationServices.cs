@@ -13,6 +13,18 @@ namespace Currency.API.Services
             _userInformationRepo = userInformationRepo;
         }
 
+        public async Task<UserModelDTO> getUserByEmailServices(string email)
+        {
+            var user = await _userInformationRepo.getUserByEmailRepo(email);
+
+            return new UserModelDTO
+            {
+                Email = user.Email,
+                UserID = user.UserID,
+                UserTag = user.UserTag
+            };
+        }
+
         public async Task<UserModelDTO> GetUserByTagService(string userTag)
         {
             var authUser = await _userInformationRepo.getUserByTagRepo(userTag);
@@ -26,6 +38,19 @@ namespace Currency.API.Services
                 Mobile = authUser.Mobile,
                 UserTag = authUser.UserTag,
                 Status = authUser.Status
+            };
+        }
+
+        public async Task<UserModelDTO> updateUserStatus(string userTag)
+        {
+            var getUser = await _userInformationRepo.getUserByTagRepo(userTag);
+
+            var updateUser = await _userInformationRepo.changeUserStatus(getUser);
+
+            return new UserModelDTO
+            {
+                UserTag = updateUser.UserTag,
+                Status = updateUser.Status
             };
         }
     }

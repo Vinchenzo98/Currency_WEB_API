@@ -7,13 +7,12 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 
-
 namespace Currency.API.Services
 {
     public class UserLoginServices : IUserLoginServices
     {
-        private readonly IUserLoginRepo _userLoginRepo;
         private readonly IConfiguration _configuration;
+        private readonly IUserLoginRepo _userLoginRepo;
 
         public UserLoginServices(IUserLoginRepo userLoginRepo, IConfiguration configuration)
         {
@@ -21,11 +20,10 @@ namespace Currency.API.Services
             _configuration = configuration;
         }
 
-
         public async Task<UserModelDTO> GetUserByIdService(int userId)
         {
             var authUser = await _userLoginRepo.GetUserByIdRepo(userId);
-          
+
             return new UserModelDTO
             {
                 UserID = authUser.UserID,
@@ -40,7 +38,6 @@ namespace Currency.API.Services
 
         public async Task<UserModelDTO> UserLoginService(string email, string password)
         {
-            
             var authUser = await _userLoginRepo.AuthLoginRepo(email);
 
             if (authUser == null)
@@ -50,7 +47,7 @@ namespace Currency.API.Services
 
             if (authUser != null && BCrypt.Net.BCrypt.Verify(password, authUser.PasswordHash))
             {
-                var token = GenerateJwtToken( new UserModelDTO
+                var token = GenerateJwtToken(new UserModelDTO
                 {
                     UserID = authUser.UserID,
                     Email = authUser.Email,
@@ -60,7 +57,6 @@ namespace Currency.API.Services
                     UserTag = authUser.UserTag,
                     Status = authUser.Status
                 });
-
 
                 var user = new UserModelDTO
                 {
@@ -87,7 +83,8 @@ namespace Currency.API.Services
             {
              new Claim(JwtRegisteredClaimNames.Sub, user.Email),
              new Claim("userId", user.UserID.ToString()),
- };
+             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["UserJwt:Issuer"],
@@ -99,4 +96,4 @@ namespace Currency.API.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
-    }
+}

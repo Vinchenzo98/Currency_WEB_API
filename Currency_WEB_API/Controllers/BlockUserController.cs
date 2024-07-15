@@ -53,6 +53,7 @@ namespace Currency_WEB_API.Controllers
                     getUserAccount.UserID
                 );
 
+            await _userInformationServices.updateUserStatus(blockUserRequest.userTag);
             return Ok(blockedUser);
         }
     }

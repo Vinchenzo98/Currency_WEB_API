@@ -3,7 +3,6 @@ using Currency.API.Models;
 using Currency.API.Repo.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-
 namespace Currency.API.Repo
 {
     public class UserInformationRepo : IUserInformationRepo
@@ -15,9 +14,25 @@ namespace Currency.API.Repo
             _currencyAPIContext = currencyAPIContext;
         }
 
-        public async Task<UsersModelAPI> getUserByTagRepo(string userTag)
+        public async Task<UsersModelAPI> changeUserStatus(UsersModelAPI usersModel)
         {
-            var user = await _currencyAPIContext.Users.FirstOrDefaultAsync(u => u.UserTag == userTag);
+            var updateAccount = await _currencyAPIContext.Users.FirstOrDefaultAsync(a => a.UserID == usersModel.UserID);
+
+            if (updateAccount != null)
+            {
+                updateAccount.Status = "Banned";
+                await _currencyAPIContext.SaveChangesAsync();
+                return updateAccount;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public async Task<UsersModelAPI> getUserByEmailRepo(string email)
+        {
+            var user = await _currencyAPIContext.Users.FirstOrDefaultAsync(u => u.Email == email);
             return user;
         }
 
@@ -27,5 +42,10 @@ namespace Currency.API.Repo
             return user;
         }
 
+        public async Task<UsersModelAPI> getUserByTagRepo(string userTag)
+        {
+            var user = await _currencyAPIContext.Users.FirstOrDefaultAsync(u => u.UserTag == userTag);
+            return user;
+        }
     }
 }

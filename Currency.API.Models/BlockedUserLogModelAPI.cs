@@ -16,7 +16,6 @@ namespace Currency.API.Models
 
         public DateTime BlockDate { get; set; }
 
-        public string Reason { get; set; }
         public DateTime UnblockDate { get; set; }
         public int UserID { get; set; }
 

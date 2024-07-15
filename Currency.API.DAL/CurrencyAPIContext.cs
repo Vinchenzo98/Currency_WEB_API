@@ -6,18 +6,17 @@ namespace Currency.API.DAL
     public class CurrencyAPIContext : DbContext
     {
         public CurrencyAPIContext(DbContextOptions<CurrencyAPIContext> options)
-            :base (options) 
-            { 
-            }
+            : base(options)
+        {
+        }
 
         public DbSet<AccountTypeModelAPI> AccountType { get; set; }
         public DbSet<AdminsModelAPI> Admins { get; set; }
-        public DbSet<BlockedUserLogModelAPI> BlockedUsers { get; set; }
-        public DbSet<CurrencyTypeModelAPI> Currency { get; set; }       
-        public DbSet<TransactionLogModelAPI> TransactionLog { get; set; }     
-        public DbSet<UsersModelAPI> Users { get; set; }
-
         public DbSet<BlockedTransactionsModelAPI> BlockedTransactions { get; set; }
+        public DbSet<BlockedUserLogModelAPI> BlockedUserLog { get; set; }
+        public DbSet<CurrencyTypeModelAPI> Currency { get; set; }
+        public DbSet<TransactionLogModelAPI> TransactionLog { get; set; }
+        public DbSet<UsersModelAPI> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -54,7 +53,14 @@ namespace Currency.API.DAL
                             bt.Amount
                         });
 
+              modelBuilder.Entity<AdminsModelAPI>(
+                     id => 
+                     {
+                         id.HasKey(e => new { e.AdminID });
+                         id.Property(e => e.AdminID).ValueGeneratedOnAdd();
+                     }
+                 );
+            
         }
-
     }
 }

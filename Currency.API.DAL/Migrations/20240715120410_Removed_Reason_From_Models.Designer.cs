@@ -4,6 +4,7 @@ using Currency.API.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Currency.API.DAL.Migrations
 {
     [DbContext(typeof(CurrencyAPIContext))]
-    partial class CurrencyAPIContextModelSnapshot : ModelSnapshot
+    [Migration("20240715120410_Removed_Reason_From_Models")]
+    partial class Removed_Reason_From_Models
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -13,5 +13,7 @@ namespace Currency.API.Services.Interfaces
             string reason,
             int adminID
         );
+
+        Task<BlockedTransactionDTO> GetBlockedTransactionByUserID(int userID);
     }
 }

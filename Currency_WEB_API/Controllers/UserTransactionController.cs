@@ -28,7 +28,6 @@ namespace Currency_WEB_API.Controllers
         }
 
         [HttpPost("getAll")]
-        [Authorize(Policy = "UserPolicy")]
         public async Task<IActionResult> GetAllUserTransactions(UserTransactionsRequest transactionsRequest)
         {
             var userId = _userFromTokenServices.GetUserIdFromToken();
@@ -52,7 +51,6 @@ namespace Currency_WEB_API.Controllers
         }
 
         [HttpPost("getNegative")]
-        [Authorize(Policy = "UserPolicy")]
         public async Task<IActionResult> GetNegativeTransaction(UserTransactionsRequest transactionsRequest)
         {
             var userId = _userFromTokenServices.GetUserIdFromToken();

@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Currency.API.Services.Interfaces;
+﻿using Currency.API.Services.Interfaces;
 using Currency_WEB_API.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Currency_WEB_API.Controllers
 {
@@ -45,7 +45,7 @@ namespace Currency_WEB_API.Controllers
 
             if (accountType == null)
             {
-                return BadRequest("Currency account allready exists for user");
+                return Ok("Currency account allready exists for user");
             }
 
             return Ok(accountType);
@@ -68,7 +68,7 @@ namespace Currency_WEB_API.Controllers
 
             if (getAllUserAccounts == null)
             {
-                return NoContent();
+                return Ok("No transactions history found");
             }
             return Ok(getAllUserAccounts);
         }

@@ -6,7 +6,6 @@
         public int AdminID { get; set; }
         public DateTime BlockDate { get; set; }
 
-        public string Reason { get; set; }
         public DateTime UnblockDate { get; set; }
 
         public int UserID { get; set; }

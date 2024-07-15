@@ -22,7 +22,7 @@ namespace Currency_WEB_API.Controllers
 
             if (admin == null)
             {
-                return NotFound("Admin does not exist");
+                return Ok("Admin does not exist");
             }
             return Ok(admin);
         }

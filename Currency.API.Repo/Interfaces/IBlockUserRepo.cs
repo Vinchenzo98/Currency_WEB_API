@@ -7,5 +7,7 @@ namespace Currency.API.Repo.Interfaces
         Task<BlockedUserLogModelAPI> createBlockedUserRepo(
          BlockedUserLogModelAPI blockedUser
         );
+
+        Task<BlockedUserLogModelAPI> getBlockedUserRepo(int userId);
     }
 }

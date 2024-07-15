@@ -20,14 +20,14 @@ namespace Currency.API.Services
         }
 
         public async Task<BlockedTransactionDTO> createBlockedTransactionService(
-                int userId,
-                int currencyId,
-                int accountId,
-                decimal amount,
-                DateTime timeSent,
-                string reason,
-                int adminID
-            )
+                        int userId,
+                        int currencyId,
+                        int accountId,
+                        decimal amount,
+                        DateTime timeSent,
+                        string reason,
+                        int adminID
+                    )
         {
             var blockedTime = DateTime.UtcNow;
 
@@ -55,6 +55,19 @@ namespace Currency.API.Services
             };
 
             return transactionDTO;
+        }
+
+        public async Task<BlockedTransactionDTO> GetBlockedTransactionByUserID(int userID)
+        {
+            var blockedUserTransaction = await _blockTransactionsRepo.GetBlockedTransactionRepo(userID);
+
+            var blockedUserTransactionDTO = new BlockedTransactionDTO
+            {
+                Amount = blockedUserTransaction.Amount,
+                TimeSent = blockedUserTransaction.TimeSent,
+                BlockedTime = blockedUserTransaction.BlockedTime
+            };
+            return blockedUserTransactionDTO;
         }
     }
 }

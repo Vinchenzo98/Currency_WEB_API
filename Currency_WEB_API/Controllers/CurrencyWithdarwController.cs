@@ -1,7 +1,6 @@
 ﻿using Currency.API.Services.Interfaces;
 using Currency_WEB_API.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Currency_WEB_API.Controllers

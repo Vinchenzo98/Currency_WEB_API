@@ -1,7 +1,7 @@
 ﻿using Currency.API.DAL;
 using Currency.API.Models;
-using Microsoft.EntityFrameworkCore;
 using Currency.API.Repo.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Currency.API.Repo
 {
@@ -23,10 +23,12 @@ namespace Currency.API.Repo
             return blockedTransaction;
         }
 
-        public async Task<BlockedTransactionsModelAPI> GetBlockedTransactionRepo(int blockedTransactionID)
+        public async Task<BlockedTransactionsModelAPI> GetBlockedTransactionRepo(
+                int userID
+            )
         {
             var blockedTransaction = await _currencyAPIContext.BlockedTransactions.FirstOrDefaultAsync(
-                bt => bt.BlockedTransactionsID == blockedTransactionID
+                bt => bt.UserID == userID
             );
             if (blockedTransaction == null)
             {

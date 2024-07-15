@@ -10,6 +10,7 @@ namespace Currency_WEB_API.Controllers
     public class CurrencyExchangeController : Controller
     {
         private readonly IAccountTypeServices _accountTypeServices;
+        private readonly IBlockedTransactionServices _blockedTransactionServices;
         private readonly ICurrencyExchangeServices _currencyExchangeServices;
         private readonly IGetUserFromTokenService _userFromTokenService;
         private readonly IUserLoginServices _userLoginServices;
@@ -18,13 +19,15 @@ namespace Currency_WEB_API.Controllers
             ICurrencyExchangeServices currencyExchangeServices,
             IGetUserFromTokenService userFromTokenService,
             IUserLoginServices userLoginServices,
-            IAccountTypeServices accountTypeServices
+            IAccountTypeServices accountTypeServices,
+            IBlockedTransactionServices blockedTransactionServices
             )
         {
             _currencyExchangeServices = currencyExchangeServices;
             _userFromTokenService = userFromTokenService;
             _userLoginServices = userLoginServices;
             _accountTypeServices = accountTypeServices;
+            _blockedTransactionServices = blockedTransactionServices;
         }
 
         [HttpPost("exchange")]
@@ -39,6 +42,16 @@ namespace Currency_WEB_API.Controllers
             {
                 return Unauthorized(userId + "not found");
             }
+
+            var userBannedTransactions = await _blockedTransactionServices.GetBlockedTransactionByUserID(
+                   user.UserID
+               );
+
+            if (userBannedTransactions != null)
+            {
+                return Ok("User has banned transaction");
+            }
+
             var getExchangeRate = await _currencyExchangeServices.GetConvertedAmountServices(currencyExchange.baseCurrency, currencyExchange.targetCurrency, currencyExchange.amount);
 
             Decimal.TryParse(currencyExchange.amount, out decimal amountToDecimal);
@@ -49,14 +62,14 @@ namespace Currency_WEB_API.Controllers
 
             if (amountToExchange == null)
             {
-                return BadRequest("Account balance is negative: " + amountToExchange.Amount + " transfer not allowed");
+                return Ok("Account balance is negative: " + amountToExchange.Amount + " transfer not allowed");
             }
 
             var exchangedAmount = await _accountTypeServices.updateAmountServices(getExchangeRate.ConversionResult, userId, currencyExchange.targetCurrency);
 
             if (exchangedAmount == null)
             {
-                return BadRequest($"Account with currency type {exchangedAmount.AccountType} allready exists");
+                return Ok($"Account with currency type {exchangedAmount.AccountType} allready exists");
             }
 
             return Ok(exchangedAmount);

@@ -1,14 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Currency.API.Services.Interfaces;
 using Currency_WEB_API.Models;
+
 namespace Currency_WEB_API.Controllers
 {
-
     [ApiController]
     [Route("api/[controller]")]
     public class UserRegisterController : Controller
     {
         private readonly IUserRegisterServices _userRegisterServices;
+
         public UserRegisterController(
             IUserRegisterServices userRegisterServices
             )
@@ -16,12 +17,11 @@ namespace Currency_WEB_API.Controllers
             _userRegisterServices = userRegisterServices;
         }
 
-        
         [HttpPost("register")]
         public async Task<IActionResult> RegisterUser([FromBody] UserRegisterRequest registerRequest)
         {
             var user = await _userRegisterServices.RegisterUserServices(
-                registerRequest.UserTag, 
+                registerRequest.UserTag,
                 registerRequest.FirstName,
                 registerRequest.LastName,
                 registerRequest.Mobile,
@@ -29,9 +29,9 @@ namespace Currency_WEB_API.Controllers
                 registerRequest.Password
             );
 
-
-            if (user == null) {
-                return BadRequest("User Already exists");
+            if (user == null)
+            {
+                return Ok("User Already exists");
             }
 
             return Ok(user);

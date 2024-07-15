@@ -18,17 +18,16 @@ namespace Currency_WEB_API.Controllers
         [HttpPost("register-portal")]
         public async Task<IActionResult> AdminRegister(AdminRegisterRequest adminRegister)
         {
-
             var registerAdmin = await _adminRegisterServices.RegisterAdminServices(
                     adminRegister.FirstName,
-                    adminRegister.LastName,  
+                    adminRegister.LastName,
                     adminRegister.Mobile,
                     adminRegister.Email,
                     adminRegister.Password
                 );
             if (registerAdmin == null)
             {
-                return NotFound("Admin allready exists");
+                return Ok("Admin allready exists");
             }
 
             return Ok(registerAdmin);

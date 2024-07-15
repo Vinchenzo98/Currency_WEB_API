@@ -1,18 +1,20 @@
 using Currency.API.DAL;
-using Currency.API.Repo.Interfaces;
 using Currency.API.Repo;
+using Currency.API.Repo.Interfaces;
 using Currency.API.Services;
 using Currency.API.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using System.Text;
 
-
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddScoped<IUserLoginServices, UserLoginServices>();
 builder.Services.AddScoped<IUserLoginRepo, UserLoginRepo>();
 builder.Services.AddScoped<IUserRegisterServices, UserRegisterServices>();
@@ -30,6 +32,10 @@ builder.Services.AddScoped<IUserInformationServices, UserInformationServices>();
 builder.Services.AddScoped<IUserInformationRepo, UserInformationRepo>();
 builder.Services.AddScoped<ITransactionLogServices, TransactionLogServices>();
 builder.Services.AddScoped<ITransactionLogRepo, TransactionLogRepo>();
+builder.Services.AddScoped<IBlockedTransactionServices, BlockedTransactionServices>();
+builder.Services.AddScoped<IAdminBlockTransactionsRepo, AdminBlockTransactionsRepo>();
+builder.Services.AddScoped<IBlockUserServices, BlockUserServices>();
+builder.Services.AddScoped<IBlockUserRepo, BlockUserRepo>();
 builder.Services.AddHttpClient<ICurrencyExchangeServices, CurrencyExchangeServices>();
 
 builder.Services.AddDbContext<CurrencyAPIContext>(options =>
@@ -37,12 +43,15 @@ builder.Services.AddDbContext<CurrencyAPIContext>(options =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
-    {
-        var origins = builder.Configuration.GetSection("AllowedCorsOrigins").Get<string[]>();
-        policy.WithOrigins(origins).AllowAnyMethod().AllowAnyHeader();
-    });
+    options.AddPolicy(MyAllowSpecificOrigins,
+                          policy =>
+                          {
+                              policy.WithOrigins("http://localhost:35842")
+                                                  .AllowAnyHeader()
+                                                  .AllowAnyMethod();
+                          });
 });
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(
@@ -80,6 +89,38 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer("UserJwt", options =>
 {
+    options.Events = new JwtBearerEvents
+    {
+      /*  OnMessageReceived = context =>
+        {
+            var token = context.Request.Cookies["UserToken"];
+            if (!string.IsNullOrEmpty(token))
+            {
+                context.Token = token;
+            }
+            return Task.CompletedTask;
+        },*/
+        OnAuthenticationFailed = context =>
+        {
+            Console.WriteLine($"Authentication failed: {context.Exception.Message}");
+            return Task.CompletedTask;
+        },
+        OnTokenValidated = context =>
+        {
+            Console.WriteLine("Token validated successfully");
+            var claims = context.Principal.Claims;
+            foreach (var claim in claims)
+            {
+                Console.WriteLine($"Claim Type: {claim.Type}, Claim Value: {claim.Value}");
+            }
+            return Task.CompletedTask;
+        },
+        OnChallenge = context =>
+        {
+            Console.WriteLine("Token validation challenge triggered");
+            return Task.CompletedTask;
+        }
+    };
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
@@ -104,23 +145,28 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["AdminJwt:Key"]))
     };
 });
-
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("UserPolicy", policy =>
     {
         policy.AuthenticationSchemes.Add("UserJwt");
+        policy.RequireClaim("userId");
         policy.RequireAuthenticatedUser();
     });
 
     options.AddPolicy("AdminPolicy", policy =>
     {
         policy.AuthenticationSchemes.Add("AdminJwt");
+        policy.RequireClaim("adminId");
         policy.RequireAuthenticatedUser();
     });
 });
 
-builder.Services.AddHttpContextAccessor();
+builder.Services.AddLogging(logging =>
+{
+    logging.ClearProviders();
+    logging.AddConsole();
+});
 
 var app = builder.Build();
 
@@ -131,14 +177,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors(MyAllowSpecificOrigins);
+
 app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseCors(MyAllowSpecificOrigins);
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
-//app.UseEndpoints(endpoints =>
-//{
-//    endpoints.MapControllers();
-//});
 
 app.Run();

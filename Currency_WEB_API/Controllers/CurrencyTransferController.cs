@@ -10,6 +10,7 @@ namespace Currency_WEB_API.Controllers
     public class CurrencyTransferController : ControllerBase
     {
         private readonly IAccountTypeServices _accountTypeServices;
+        private readonly IBlockedTransactionServices _blockedTransactionServices;
         private readonly IGetUserFromTokenService _userFromTokenService;
         private readonly IUserInformationServices _userInformationServices;
         private readonly IUserLoginServices _userLoginServices;
@@ -18,13 +19,15 @@ namespace Currency_WEB_API.Controllers
           IGetUserFromTokenService userFromTokenService,
           IUserLoginServices userLoginServices,
           IAccountTypeServices accountTypeServices,
-          IUserInformationServices userInformationServices
+          IUserInformationServices userInformationServices,
+          IBlockedTransactionServices blockedTransactionServices
           )
         {
             _userFromTokenService = userFromTokenService;
             _userLoginServices = userLoginServices;
             _accountTypeServices = accountTypeServices;
             _userInformationServices = userInformationServices;
+            _blockedTransactionServices = blockedTransactionServices;
         }
 
         [HttpPost("transfer")]
@@ -40,17 +43,18 @@ namespace Currency_WEB_API.Controllers
                 return Unauthorized(currentUserId + "not found");
             }
 
-            //block user based on reason
-            //reasons can be:
-            //money laundering
-            //identity check fails
-            //too many banned transactions
+            var userBannedTransactions = await _blockedTransactionServices.GetBlockedTransactionByUserID(
+                    currentUser.UserID
+                );
 
-            //var userBanStatus
+            if (userBannedTransactions != null)
+            {
+                return Ok("User has banned transaction");
+            }
 
             var getPayeeId = await _userInformationServices.GetUserByTagService(transferAmountRequest.userTag);
 
-            //get user then compare currency tags in accounts to see if conversion needs to happen
+            //get user then compare currency tags in accounts to see if currency exchange needs to happen
 
             decimal convertToNegative = -Math.Abs(transferAmountRequest.amount);
 
@@ -58,14 +62,14 @@ namespace Currency_WEB_API.Controllers
 
             if (getUserAccount == null)
             {
-                return BadRequest("Account balance is negative: " + getUserAccount.Amount + " transfer not allowed");
+                return Ok("Account balance is negative: " + getUserAccount.Amount + " transfer not allowed");
             }
 
             var getPayeeAccount = await _accountTypeServices.updateAmountServices(transferAmountRequest.amount, getPayeeId.UserID, transferAmountRequest.currencyTag);
 
             if (getPayeeAccount == null)
             {
-                return NotFound("User " + getPayeeId.UserTag + "does not have an account");
+                return Ok("User " + getPayeeId.UserTag + "does not have an account");
             }
 
             return Ok(getUserAccount);
