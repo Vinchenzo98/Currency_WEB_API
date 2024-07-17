@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
-
 namespace Currency.API.Services
 {
     public class GetAdminFromTokenService : IGetAdminTokenFromService

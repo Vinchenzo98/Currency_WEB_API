@@ -30,9 +30,9 @@ namespace Currency_WEB_API.Controllers
             _blockUserServices = blockUserServices;
         }
 
-        [HttpPost("block-user")]
         [Authorize(Policy = "AdminPolicy")]
-        public async Task<IActionResult> BlockUser(BlockUserRequest blockUserRequest)
+        [HttpPost("block-user-account")]
+        public async Task<IActionResult> BlockUserAccount(BlockUserRequest blockUserRequest)
         {
             var adminId = _getAdminTokenFromService.GetAdminIdFromToken();
 

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Currency.API.Services.Interfaces
+﻿namespace Currency.API.Services.Interfaces
 {
     public interface IDeniedTransactionServices
     {
+        /*        Task<decimal> CheckTransactionLimit(decimal amount);
+        */
     }
 }

@@ -24,8 +24,8 @@ namespace Currency_WEB_API.Controllers
             _userLoginServices = userLoginServices;
         }
 
-        [HttpPost("create-account")]
         [Authorize(Policy = "UserPolicy")]
+        [HttpPost("create-account")]
         public async Task<IActionResult> createAccount([FromBody] AccountTypeRequest accountRequest)
         {
             var userId = _userFromTokenServices.GetUserIdFromToken();
@@ -51,8 +51,8 @@ namespace Currency_WEB_API.Controllers
             return Ok(accountType);
         }
 
-        [HttpGet("get-accounts")]
         [Authorize(Policy = "UserPolicy")]
+        [HttpGet("get-accounts")]
         public async Task<IActionResult> getAllUserAccounts()
         {
             var userId = _userFromTokenServices.GetUserIdFromToken();

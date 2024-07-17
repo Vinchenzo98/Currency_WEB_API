@@ -30,6 +30,11 @@ namespace Currency.API.Repo
             }
         }
 
+        public List<UsersModelAPI> getAllUsers()
+        {
+            return _currencyAPIContext.Users.ToList();
+        }
+
         public async Task<UsersModelAPI> getUserByEmailRepo(string email)
         {
             var user = await _currencyAPIContext.Users.FirstOrDefaultAsync(u => u.Email == email);

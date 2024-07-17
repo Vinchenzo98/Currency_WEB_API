@@ -30,8 +30,8 @@ namespace Currency_WEB_API.Controllers
             _blockedTransactionServices = blockedTransactionServices;
         }
 
-        [HttpPost("exchange")]
         [Authorize(Policy = "UserPolicy")]
+        [HttpPost("exchange")]
         public async Task<IActionResult> ExchangeCurrencies(CurrencyExchangeRequest currencyExchange)
         {
             var userId = _userFromTokenService.GetUserIdFromToken();

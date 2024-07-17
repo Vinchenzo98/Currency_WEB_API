@@ -24,8 +24,8 @@ namespace Currency_WEB_API.Controllers
             _userLoginServices = userLoginServices;
         }
 
-        [HttpPost("deposit")]
         [Authorize(Policy = "UserPolicy")]
+        [HttpPost("deposit")]
         public async Task<IActionResult> DepositAmount(DepositRequest depositRequest)
         {
             var userId = _userFromTokenServices.GetUserIdFromToken();

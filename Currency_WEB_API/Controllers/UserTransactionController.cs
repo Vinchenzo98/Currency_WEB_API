@@ -27,6 +27,7 @@ namespace Currency_WEB_API.Controllers
             _accountTypeServices = accountTypeServices;
         }
 
+        [Authorize(Policy = "UserPolicy")]
         [HttpPost("getAll")]
         public async Task<IActionResult> GetAllUserTransactions(UserTransactionsRequest transactionsRequest)
         {
@@ -50,6 +51,7 @@ namespace Currency_WEB_API.Controllers
             return Ok(getAllTransaction);
         }
 
+        [Authorize(Policy = "UserPolicy")]
         [HttpPost("getNegative")]
         public async Task<IActionResult> GetNegativeTransaction(UserTransactionsRequest transactionsRequest)
         {
@@ -73,8 +75,8 @@ namespace Currency_WEB_API.Controllers
             return Ok(getAllTransaction);
         }
 
-        [HttpPost("getPositive")]
         [Authorize(Policy = "UserPolicy")]
+        [HttpPost("getPositive")]
         public async Task<IActionResult> GetPositiveTransaction(UserTransactionsRequest transactionsRequest)
         {
             var userId = _userFromTokenServices.GetUserIdFromToken();

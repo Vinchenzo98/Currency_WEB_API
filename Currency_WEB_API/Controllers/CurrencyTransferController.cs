@@ -11,6 +11,7 @@ namespace Currency_WEB_API.Controllers
     {
         private readonly IAccountTypeServices _accountTypeServices;
         private readonly IBlockedTransactionServices _blockedTransactionServices;
+        private readonly IDeniedTransactionServices _deniedTransactionServices;
         private readonly IGetUserFromTokenService _userFromTokenService;
         private readonly IUserInformationServices _userInformationServices;
         private readonly IUserLoginServices _userLoginServices;
@@ -20,7 +21,8 @@ namespace Currency_WEB_API.Controllers
           IUserLoginServices userLoginServices,
           IAccountTypeServices accountTypeServices,
           IUserInformationServices userInformationServices,
-          IBlockedTransactionServices blockedTransactionServices
+          IBlockedTransactionServices blockedTransactionServices,
+          IDeniedTransactionServices deniedTransactionServices
           )
         {
             _userFromTokenService = userFromTokenService;
@@ -28,10 +30,11 @@ namespace Currency_WEB_API.Controllers
             _accountTypeServices = accountTypeServices;
             _userInformationServices = userInformationServices;
             _blockedTransactionServices = blockedTransactionServices;
+            _deniedTransactionServices = deniedTransactionServices;
         }
 
-        [HttpPost("transfer")]
         [Authorize(Policy = "UserPolicy")]
+        [HttpPost("transfer")]
         public async Task<IActionResult> TransferCurrency(TransferAmountRequest transferAmountRequest)
         {
             var currentUserId = _userFromTokenService.GetUserIdFromToken();
@@ -43,6 +46,9 @@ namespace Currency_WEB_API.Controllers
                 return Unauthorized(currentUserId + "not found");
             }
 
+            //check if user has KYC approved
+            //check if payee is KYC approved
+
             var userBannedTransactions = await _blockedTransactionServices.GetBlockedTransactionByUserID(
                     currentUser.UserID
                 );
@@ -51,6 +57,14 @@ namespace Currency_WEB_API.Controllers
             {
                 return Ok("User has banned transaction");
             }
+
+            /* var transactionDenied = await _deniedTransactionServices.CheckTransactionLimit(transferAmountRequest.amount);
+
+                   if (transactionDenied != null)
+                   {
+                       return Ok("User transaction denied");
+                   }
+            */
 
             var getPayeeId = await _userInformationServices.GetUserByTagService(transferAmountRequest.userTag);
 

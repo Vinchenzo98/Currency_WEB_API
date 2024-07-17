@@ -13,6 +13,26 @@ namespace Currency.API.Services
             _userInformationRepo = userInformationRepo;
         }
 
+        public async Task<List<UserModelDTO>> getAllUsersService()
+        {
+            var getUsers = _userInformationRepo.getAllUsers();
+
+            var usersList = new List<UserModelDTO>();
+
+            foreach (var user in getUsers)
+            {
+                var userDTO = new UserModelDTO()
+                {
+                    UserTag = user.UserTag,
+                    Email = user.Email,
+                    Status = user.Status,
+                };
+                usersList.Add(userDTO);
+            }
+
+            return usersList;
+        }
+
         public async Task<UserModelDTO> getUserByEmailServices(string email)
         {
             var user = await _userInformationRepo.getUserByEmailRepo(email);

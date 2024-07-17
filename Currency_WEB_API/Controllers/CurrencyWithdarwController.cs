@@ -24,8 +24,8 @@ namespace Currency_WEB_API.Controllers
             _userLoginServices = userLoginServices;
         }
 
-        [HttpPost("withdraw")]
         [Authorize(Policy = "UserPolicy")]
+        [HttpPost("withdraw")]
         public async Task<IActionResult> WithdrawAmount(WithdrawRequest withdrawRequest)
         {
             var userId = _userFromTokenServices.GetUserIdFromToken();

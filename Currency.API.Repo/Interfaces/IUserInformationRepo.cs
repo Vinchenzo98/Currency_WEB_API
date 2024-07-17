@@ -6,6 +6,8 @@ namespace Currency.API.Repo.Interfaces
     {
         Task<UsersModelAPI> changeUserStatus(UsersModelAPI usersModel);
 
+        List<UsersModelAPI> getAllUsers();
+
         Task<UsersModelAPI> getUserByEmailRepo(string email);
 
         Task<UsersModelAPI> getUserByTagRepo(string userTag);

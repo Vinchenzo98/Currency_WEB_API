@@ -33,8 +33,8 @@ namespace Currency_WEB_API.Controllers
             _accountTypeServices = accountTypeServices;
         }
 
-        [HttpPost("block-transaction")]
         [Authorize(Policy = "AdminPolicy")]
+        [HttpPost("block-transaction")]
         public async Task<IActionResult> BlockTransaction(BlockTransactionRequest blockedTransaction)
         {
             var adminId = _getAdminTokenFromService.GetAdminIdFromToken();
