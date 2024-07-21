@@ -18,16 +18,14 @@ namespace Currency.API.Repo
         {
             var updateAccount = await _currencyAPIContext.Users.FirstOrDefaultAsync(a => a.UserID == usersModel.UserID);
 
-            if (updateAccount != null)
-            {
-                updateAccount.Status = "Banned";
-                await _currencyAPIContext.SaveChangesAsync();
-                return updateAccount;
-            }
-            else
+            if (updateAccount == null)
             {
                 return null;
             }
+
+            updateAccount.Status = updateAccount.Status == "Approved" ? "Banned" : "Approved";
+            await _currencyAPIContext.SaveChangesAsync();
+            return updateAccount;
         }
 
         public List<UsersModelAPI> getAllUsers()

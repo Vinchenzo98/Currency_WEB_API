@@ -23,14 +23,45 @@ namespace Currency.API.Repo
             return blockedUser;
         }
 
-        public async Task<BlockedUserLogModelAPI> getBlockedUserRepo(int userId)
+        public async Task<List<BlockedUserLogModelAPI>> getUnBlockedUserRepo(int userId)
         {
-            var blockedUser = await _currencyAPIContext.BlockedUserLog.FirstOrDefaultAsync(u => u.UserID == userId);
+            var blockedUser = _currencyAPIContext.BlockedUserLog
+                                .Where(u => u.UserID == userId)
+                                .ToList();
+
             if (blockedUser == null)
             {
                 return null;
             }
             return blockedUser;
         }
+
+        public async Task<BlockedUserLogModelAPI> removeBlockedUserRepo(
+              BlockedUserLogModelAPI blockedUser
+     )
+        {
+            _currencyAPIContext.Remove(blockedUser);
+            await _currencyAPIContext.SaveChangesAsync();
+            return blockedUser;
+        }
+
+        public async Task<BlockedUserLogModelAPI> updateBlockedUserRepo(BlockedUserLogModelAPI blockedUser)
+        {
+            var trackedEntity = _currencyAPIContext.ChangeTracker.Entries<BlockedUserLogModelAPI>()
+                .FirstOrDefault(e => e.Entity.AccountID == blockedUser.AccountID &&
+                                     e.Entity.AdminID == blockedUser.AdminID &&
+                                     e.Entity.UserID == blockedUser.UserID &&
+                                     e.Entity.BlockDate == blockedUser.BlockDate);
+
+            if (trackedEntity != null)
+            {
+                _currencyAPIContext.Entry(trackedEntity.Entity).State = EntityState.Detached;
+            }
+
+            _currencyAPIContext.Update(blockedUser);
+            await _currencyAPIContext.SaveChangesAsync();
+            return blockedUser;
+        }
+
     }
 }

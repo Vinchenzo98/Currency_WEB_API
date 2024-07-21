@@ -14,9 +14,9 @@ namespace Currency.API.Models
         [ForeignKey("AdminID")]
         public AdminsModelAPI Admins { get; set; }
 
-        public DateTime BlockDate { get; set; }
+        public DateTime? BlockDate { get; set; }
 
-        public DateTime UnblockDate { get; set; }
+        public DateTime? UnblockDate { get; set; }
         public int UserID { get; set; }
 
         [ForeignKey("UserID")]

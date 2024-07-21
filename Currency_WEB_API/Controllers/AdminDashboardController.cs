@@ -28,7 +28,7 @@ namespace Currency_WEB_API.Controllers
         }
 
         [Authorize(Policy = "AdminPolicy")]
-        [HttpGet("get-accounts")]
+        [HttpPost("get-user-accounts")]
         public async Task<IActionResult> GetAllUserAccounts(UserAccountsRequest userAccounts)
         {
             var adminId = _getAdminTokenFromService.GetAdminIdFromToken();

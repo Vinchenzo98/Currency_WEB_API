@@ -8,6 +8,7 @@ namespace Currency_WEB_API.Controllers
     [Route("api/[controller]")]
     public class UserLoginController : Controller
     {
+        private readonly IAccountTypeServices _accountTypeServices;
         private readonly IBlockUserServices _blockUserServices;
         private readonly IUserInformationServices _userInformationServices;
         private readonly IUserLoginServices _userLoginServices;
@@ -15,12 +16,14 @@ namespace Currency_WEB_API.Controllers
         public UserLoginController(
             IUserLoginServices userLoginServices,
             IBlockUserServices blockUserServices,
-            IUserInformationServices userInformationServices
+            IUserInformationServices userInformationServices,
+            IAccountTypeServices accountTypeServices
             )
         {
             _userLoginServices = userLoginServices;
             _blockUserServices = blockUserServices;
             _userInformationServices = userInformationServices;
+            _accountTypeServices = accountTypeServices;
         }
 
         [HttpPost("login")]
@@ -30,7 +33,7 @@ namespace Currency_WEB_API.Controllers
 
             var isUserBanned = await _blockUserServices.getBlockedUserServices(getExistingUser.UserID);
 
-            if (isUserBanned != null)
+            if (isUserBanned != null && isUserBanned.BlockDate != null)
             {
                 return Ok("User is banned");
             }

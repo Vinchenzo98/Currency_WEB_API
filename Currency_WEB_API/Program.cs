@@ -4,6 +4,7 @@ using Currency.API.Repo.Interfaces;
 using Currency.API.Services;
 using Currency.API.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -11,7 +12,11 @@ using System.Text;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddHttpLogging(logging =>
+{
+    logging.LoggingFields = HttpLoggingFields.All;
+    logging.RequestHeaders.Add("Authorization");
+});
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
 
@@ -27,6 +32,7 @@ builder.Services.AddScoped<IAdminRegisterRepo, AdminReigsterRepo>();
 builder.Services.AddScoped<IAccountTypeServices, AccountTypeServices>();
 builder.Services.AddScoped<IAccountTypeRepo, AccountTypeRepo>();
 builder.Services.AddScoped<IGetUserFromTokenService, GetUserFromTokenService>();
+builder.Services.AddScoped<IGetAdminTokenFromService, GetAdminFromTokenService>();
 builder.Services.AddScoped<ICurrencyExchangeRepo, CurrencyExchangeRepo>();
 builder.Services.AddScoped<IUserInformationServices, UserInformationServices>();
 builder.Services.AddScoped<IUserInformationRepo, UserInformationRepo>();
@@ -89,17 +95,9 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer("UserJwt", options =>
 {
+    options.IncludeErrorDetails = true;
     options.Events = new JwtBearerEvents
     {
-      /*  OnMessageReceived = context =>
-        {
-            var token = context.Request.Cookies["UserToken"];
-            if (!string.IsNullOrEmpty(token))
-            {
-                context.Token = token;
-            }
-            return Task.CompletedTask;
-        },*/
         OnAuthenticationFailed = context =>
         {
             Console.WriteLine($"Authentication failed: {context.Exception.Message}");
@@ -169,7 +167,7 @@ builder.Services.AddLogging(logging =>
 });
 
 var app = builder.Build();
-
+app.UseHttpLogging();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

@@ -15,5 +15,15 @@ namespace Currency.API.Services.Interfaces
         );
 
         Task<BlockedTransactionDTO> GetBlockedTransactionByUserID(int userID);
+
+        Task<BlockedTransactionDTO> updateBlockedTransactionService(
+                    int userId,
+            int currencyId,
+            int accountId,
+            decimal amount,
+            DateTime timeSent,
+            string reason,
+            int adminID
+        );
     }
 }

@@ -8,6 +8,12 @@ namespace Currency.API.Repo.Interfaces
          BlockedUserLogModelAPI blockedUser
         );
 
-        Task<BlockedUserLogModelAPI> getBlockedUserRepo(int userId);
+        Task<List<BlockedUserLogModelAPI>> getUnBlockedUserRepo(int userId);
+
+        Task<BlockedUserLogModelAPI> removeBlockedUserRepo(
+              BlockedUserLogModelAPI blockedUser
+     );
+
+        Task<BlockedUserLogModelAPI> updateBlockedUserRepo(BlockedUserLogModelAPI blockedUser);
     }
 }

@@ -69,5 +69,45 @@ namespace Currency.API.Services
             };
             return blockedUserTransactionDTO;
         }
+
+        public async Task<BlockedTransactionDTO> updateBlockedTransactionService(
+                                    int userId,
+                    int currencyId,
+                    int accountId,
+                    decimal amount,
+                    DateTime timeSent,
+                    string reason,
+                    int adminID
+                )
+        {
+            var unBlockedTime = DateTime.UtcNow;
+
+            var updateTransaction = new BlockedTransactionsModelAPI
+            {
+                AccountID = accountId,
+                CurrencyID = currencyId,
+                UserID = userId,
+                TimeSent = timeSent,
+                Amount = amount,
+                Reason = reason,
+                UnBlockedTime = unBlockedTime,
+                AdminID = adminID
+            };
+
+            var transactionUpdate = await _blockTransactionsRepo.updateBlockedStatusRepo(updateTransaction);
+
+            var transactionDTO = new BlockedTransactionDTO
+            {
+                AccountID = transactionUpdate.AccountID,
+                CurrencyID = transactionUpdate.CurrencyID,
+                UserID = transactionUpdate.UserID,
+                TimeSent = transactionUpdate.TimeSent,
+                Amount = transactionUpdate.Amount,
+                Reason = transactionUpdate.Reason,
+                UnBlockedTime = transactionUpdate.UnBlockedTime
+            };
+
+            return transactionDTO;
+        }
     }
 }

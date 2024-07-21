@@ -47,6 +47,17 @@ namespace Currency_WEB_API.Controllers
 
             var getUserAccount = await _accountTypeServices.getUserAccountServices(getUserId.UserID, blockUserRequest.currencyTag);
 
+            var isUnblocked = await _blockUserServices.getUnBlockedUserServices(getUserId.UserID);
+
+            if (isUnblocked != null && isUnblocked.UnblockDate != null)
+            {
+                await _blockUserServices.removeBlockedUserServices(
+                    getUserAccount.AccountID,
+                    admin.AdminID,
+                    getUserAccount.UserID
+                 );
+            }
+
             var blockedUser = await _blockUserServices.createBlockedUserServices(
                     getUserAccount.AccountID,
                     admin.AdminID,
@@ -55,6 +66,32 @@ namespace Currency_WEB_API.Controllers
 
             await _userInformationServices.updateUserStatus(blockUserRequest.userTag);
             return Ok(blockedUser);
+        }
+
+        [Authorize(Policy = "AdminPolicy")]
+        [HttpPost("unblock-user-account")]
+        public async Task<IActionResult> UnBlockUserAccount(UnBlockUserRequest unBlockUserRequest)
+        {
+            var adminId = _getAdminTokenFromService.GetAdminIdFromToken();
+
+            var admin = await _adminLoginServices.GetAdminByIdService(adminId);
+
+            if (admin == null)
+            {
+                return Unauthorized(adminId + "not found");
+            }
+
+            var getUserId = await _userInformationServices.GetUserByTagService(unBlockUserRequest.userTag);
+            var getBlockedUser = await _blockUserServices.getBlockedUserServices(getUserId.UserID);
+            var unBlockedUser = await _blockUserServices.updateBlockedUserServices(
+                    getBlockedUser.AccountID,
+                    admin.AdminID,
+                    getBlockedUser.UserID,
+                    getBlockedUser.BlockDate
+                );
+
+            await _userInformationServices.updateUserStatus(unBlockUserRequest.userTag);
+            return Ok(unBlockedUser);
         }
     }
 }

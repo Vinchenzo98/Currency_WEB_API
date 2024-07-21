@@ -39,19 +39,7 @@ namespace Currency.API.Repo
 
         public async Task<BlockedTransactionsModelAPI> updateBlockedStatusRepo(BlockedTransactionsModelAPI blockedTransaction)
         {
-            var getBlockedTransaction = await _currencyAPIContext.BlockedTransactions.FirstOrDefaultAsync(bt => bt.BlockedTransactionsID == blockedTransaction.BlockedTransactionsID);
-
-            if (getBlockedTransaction == null)
-            {
-                blockedTransaction.BlockedTime = DateTime.UtcNow;
-                _currencyAPIContext.BlockedTransactions.Add(blockedTransaction);
-            }
-            else
-            {
-                getBlockedTransaction.UnBlockedTime = DateTime.UtcNow;
-                _currencyAPIContext.BlockedTransactions.Update(blockedTransaction);
-            }
-
+            _currencyAPIContext.Update(blockedTransaction);
             _currencyAPIContext.SaveChanges();
             return blockedTransaction;
         }

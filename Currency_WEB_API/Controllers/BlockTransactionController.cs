@@ -68,5 +68,41 @@ namespace Currency_WEB_API.Controllers
 
             return Ok(createBlockedTransaction);
         }
+
+        [Authorize(Policy = "AdminPolicy")]
+        [HttpPost("unblock-transaction")]
+        public async Task<IActionResult> UnBlockTransaction(BlockTransactionRequest unBlockTransactionRequest)
+        {
+            var adminId = _getAdminTokenFromService.GetAdminIdFromToken();
+
+            var admin = await _adminLoginServices.GetAdminByIdService(adminId);
+
+            if (admin == null)
+            {
+                return Unauthorized(adminId + "not found");
+            }
+
+            var getUserId = await _userInformationServices.GetUserByTagService(unBlockTransactionRequest.userTag);
+
+            var getUserAccount = await _accountTypeServices.getUserAccountServices(getUserId.UserID, unBlockTransactionRequest.currencyTag);
+
+            var getTransactionTime = await _transactionLogServices.getUserTransactionByIDServices(
+                getUserAccount.UserID,
+                getUserAccount.CurrencyID,
+                getUserAccount.Amount
+            );
+
+            var createBlockedTransaction = await _blockedTransactionServices.updateBlockedTransactionService(
+                    getTransactionTime.UserID,
+                    getTransactionTime.CurrencyID,
+                    getTransactionTime.AccountID,
+                    getTransactionTime.Amount,
+                    getTransactionTime.TimeSent,
+                    unBlockTransactionRequest.Reason,
+                    admin.AdminID
+                );
+
+            return Ok(createBlockedTransaction);
+        }
     }
 }
