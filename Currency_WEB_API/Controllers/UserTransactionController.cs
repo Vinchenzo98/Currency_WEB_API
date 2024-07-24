@@ -29,7 +29,7 @@ namespace Currency_WEB_API.Controllers
 
         [Authorize(Policy = "UserPolicy")]
         [HttpPost("getAll")]
-        public async Task<IActionResult> GetAllUserTransactions(UserTransactionsRequest transactionsRequest)
+        public async Task<IActionResult> GetAllUserTransactions([FromBody]UserTransactionsRequest transactionsRequest)
         {
             var userId = _userFromTokenServices.GetUserIdFromToken();
 
@@ -40,6 +40,11 @@ namespace Currency_WEB_API.Controllers
                 return Unauthorized(userId + "not found");
             }
 
+            if (string.IsNullOrEmpty(transactionsRequest.currencyTag))
+            {
+                return BadRequest("Currency Tag is required");
+            }
+
             var getAccount = await _accountTypeServices.getUserAccountServices(userId, transactionsRequest.currencyTag);
 
             var getAllTransaction = _transactionLogServices.getAllTransactionsServices(
@@ -47,7 +52,7 @@ namespace Currency_WEB_API.Controllers
                     transactionsRequest.currencyTag,
                     getAccount.AccountID
                 );
-
+            
             return Ok(getAllTransaction);
         }
 

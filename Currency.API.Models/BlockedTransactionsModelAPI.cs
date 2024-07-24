@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Currency.API.Models
 {
@@ -18,7 +18,7 @@ namespace Currency.API.Models
         public DateTime BlockedTime { get; set; }
 
         [Key]
-        public int BlockedTransactionsID { get; set; }
+        public int BlockTransactionsID { get; set; }
 
         public int CurrencyID { get; set; }
         public string Reason { get; set; }

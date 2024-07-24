@@ -42,6 +42,7 @@ builder.Services.AddScoped<IBlockedTransactionServices, BlockedTransactionServic
 builder.Services.AddScoped<IAdminBlockTransactionsRepo, AdminBlockTransactionsRepo>();
 builder.Services.AddScoped<IBlockUserServices, BlockUserServices>();
 builder.Services.AddScoped<IBlockUserRepo, BlockUserRepo>();
+builder.Services.AddScoped<IDeniedTransactionServices, DeniedTransactionServices>();
 builder.Services.AddHttpClient<ICurrencyExchangeServices, CurrencyExchangeServices>();
 
 builder.Services.AddDbContext<CurrencyAPIContext>(options =>

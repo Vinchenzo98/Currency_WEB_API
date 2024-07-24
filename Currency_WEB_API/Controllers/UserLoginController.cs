@@ -1,5 +1,6 @@
 ﻿using Currency.API.Services.Interfaces;
 using Currency_WEB_API.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Currency_WEB_API.Controllers
@@ -12,18 +13,21 @@ namespace Currency_WEB_API.Controllers
         private readonly IBlockUserServices _blockUserServices;
         private readonly IUserInformationServices _userInformationServices;
         private readonly IUserLoginServices _userLoginServices;
+        private readonly IGetUserFromTokenService _userFromTokenService;
 
         public UserLoginController(
             IUserLoginServices userLoginServices,
             IBlockUserServices blockUserServices,
             IUserInformationServices userInformationServices,
-            IAccountTypeServices accountTypeServices
+            IAccountTypeServices accountTypeServices,
+            IGetUserFromTokenService userFromTokenService
             )
         {
             _userLoginServices = userLoginServices;
             _blockUserServices = blockUserServices;
             _userInformationServices = userInformationServices;
             _accountTypeServices = accountTypeServices;
+            _userFromTokenService = userFromTokenService;
         }
 
         [HttpPost("login")]
@@ -45,6 +49,25 @@ namespace Currency_WEB_API.Controllers
                 return Ok("User does not exist");
             }
             return Ok(user);
+        }
+
+
+        [Authorize(Policy = "UserPolicy")]
+        [HttpGet("get-users")]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var userId = _userFromTokenService.GetUserIdFromToken();
+
+            var currentUser = await _userLoginServices.GetUserByIdService(userId);
+
+            if (currentUser == null)
+            {
+                return Unauthorized(userId + "not found");
+            }
+
+            var getAllUsers = await _userInformationServices.getAllUsersService();
+
+            return Ok(getAllUsers);
         }
     }
 }

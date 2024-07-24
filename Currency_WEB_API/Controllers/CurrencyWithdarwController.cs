@@ -41,8 +41,6 @@ namespace Currency_WEB_API.Controllers
 
             var withdrawAmount = await _accountTypeServices.updateAmountServices(convertToNegative, userId, withdrawRequest.currencyTag);
 
-            //take from bank account in api
-
             return Ok(withdrawAmount);
         }
     }

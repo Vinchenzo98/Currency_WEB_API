@@ -49,14 +49,14 @@ namespace Currency_WEB_API.Controllers
             //check if user has KYC approved
             //check if payee is KYC approved
 
-            var userBannedTransactions = await _blockedTransactionServices.GetBlockedTransactionByUserID(
-                    currentUser.UserID
-                );
+            /*        var userBannedTransactions = await _blockedTransactionServices.GetBlockedTransactionByUserID(
+                            currentUser.UserID
+                        );
 
-            if (userBannedTransactions != null)
-            {
-                return Ok("User has banned transaction");
-            }
+                    if (userBannedTransactions != null)
+                    {
+                        return Ok("User has banned transaction");
+                    }*/
 
             /* var transactionDenied = await _deniedTransactionServices.CheckTransactionLimit(transferAmountRequest.amount);
 
@@ -83,6 +83,7 @@ namespace Currency_WEB_API.Controllers
 
             if (getPayeeAccount == null)
             {
+                v
                 return Ok("User " + getPayeeId.UserTag + "does not have an account");
             }
 
