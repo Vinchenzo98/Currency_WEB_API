@@ -83,7 +83,7 @@ namespace Currency_WEB_API.Controllers
 
             if (getPayeeAccount == null)
             {
-                v
+                
                 return Ok("User " + getPayeeId.UserTag + "does not have an account");
             }
 
