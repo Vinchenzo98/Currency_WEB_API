@@ -61,6 +61,11 @@ namespace Currency.API.Services
         {
             var blockedUserTransaction = await _blockTransactionsRepo.GetBlockedTransactionRepo(userID);
 
+            if (blockedUserTransaction == null)
+            {
+                return null;
+            }
+
             var blockedUserTransactionDTO = new BlockedTransactionDTO
             {
                 Amount = blockedUserTransaction.Amount,
